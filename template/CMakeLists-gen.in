@@ -1,0 +1,121 @@
+#
+#  @PLUGIN_PROJECTNAME@
+# 
+#  CMakeLists template
+#  Copyright (C) 2018  Pat Deegan, https://psychogenic.com
+#
+#   This file is a supporting component of the 
+#   Coraline [https://coraline.psychogenic.com/] plugin 
+#   skeleton/code generator [https://github.com/psychogenic/coraline-dev-plugin]
+# 
+#   It is released under the terms and conditions of the
+#   Apache License, v2.0.  See the included LICENSE file
+#   for details.
+
+
+
+cmake_minimum_required(VERSION 2.6)
+
+project(@PLUGIN_PROJECTNAME@)
+
+
+find_package(PkgConfig REQUIRED)
+
+
+pkg_search_module(CORALINEPLUGINDEV REQUIRED coraline-plugin-dev)
+# Add any other requirements you may have, e.g.
+# pkg_search_module(GTK REQUIRED gtk+-3.0)
+
+
+#  Things you want to configure, by filling in the "string" with something suitable
+
+set(CPACK_PACKAGE_CONTACT "Pat Deegan, https://psychogenic.com")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Coraline @PLUGIN_SHORTNAME@ plugin")
+set(CPACK_PACKAGE_VENDOR "psychogenic.com")
+
+
+if (ENV{TRAVIS_TAG})
+  set(CPACK_PACKAGE_VERSION $ENV{TRAVIS_TAG})
+else()
+  set(CPACK_PACKAGE_VERSION 0.0.1)
+endif()
+
+
+
+
+# why is this list/string crap so complicated?  ugh, cmake... must be 
+# a better way, can't be bothered to find out.
+set(GEN_FLAGS -Wall -DWEBVIEW_GTK=1)
+
+set(ALLMYFLAGGIES ${CMAKE_C_FLAGS} ${GEN_FLAGS} ${CORALINEPLUGINDEV_CFLAGS})
+string(REPLACE ";" " " ALLMYFLAGGIESSTR "${ALLMYFLAGGIES}")
+set(CMAKE_C_FLAGS ${ALLMYFLAGGIESSTR})
+set(CMAKE_CXX_FLAGS ${ALLMYFLAGGIESSTR})
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install directory (default: /usr/local)" FORCE)
+endif()
+
+include_directories(include)
+
+
+#
+# Packaging
+#
+set(CPACK_SET_DESTDIR true)
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "/usr/local" CACHE STRING "Install directory (default: /usr/local).")
+set(CPACK_INSTALL_PREFIX ${CPACK_PACKAGE_INSTALL_DIRECTORY} CACHE STRING "Install directory (default: /usr/local).")
+set(CPACK_PACKAGING_PREFIX ${CPACK_PACKAGE_INSTALL_DIRECTORY} CACHE STRING "Install directory (default: /usr/local).")
+
+
+
+
+
+if (NOT CMAKE_SYSROOT)
+# Detect platform architecture to use it for the Debian package
+  execute_process(COMMAND dpkg --print-architecture OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE OUTPUT_QUIET)
+endif()
+
+set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_PACKAGE_VERSION}_${CPACK_PACKAGE_ARCHITECTURE}")
+
+# Add the build directory to PKG_CONFIG_PATH
+set(ENV{PKG_CONFIG_PATH} "${PROJECT_BINARY_DIR}:$ENV{PKG_CONFIG_PATH}")
+
+#
+# Debian, RPM and ZIP packages
+#
+if (CMAKE_SYSROOT)
+  # CPack does like RPM package in a cross-toolchain context
+  set(CPACK_GENERATOR "DEB;ZIP")
+else()
+  set(CPACK_GENERATOR "DEB;RPM;ZIP")
+endif()
+
+set(CPACK_RPM_PACKAGE_REQUIRES "coraline >= 1.0.14")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "coraline (>= 1.0.14)")
+
+
+
+
+
+
+
+set(@PLUGIN_PROJECTNAME@_SRCS 
+    loader.cpp
+    @PLUGIN_CLASS@_plugin.cpp
+)
+
+set(@PLUGIN_PROJECTNAME@_LIBS ${CORALINEPLUGINDEV_LDFLAGS})
+
+add_library(@PLUGIN_PROJECTNAME@ SHARED ${@PLUGIN_PROJECTNAME@_SRCS})
+target_link_libraries(@PLUGIN_PROJECTNAME@ ${@PLUGIN_PROJECTNAME@_LIBS})
+
+install(TARGETS @PLUGIN_PROJECTNAME@ LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/share/coraline/plugins)
+install(DIRECTORY shared/@PLUGIN_SHORTNAME@ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/coraline/plugin-resources)
+
+
+
+
+
+
+include(CPack)
