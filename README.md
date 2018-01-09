@@ -1,4 +1,5 @@
-#Coraline Plugin Development Skeleton Generator
+Coraline Plugin Development Skeleton Generator
+==============================================
 
 This is a skeleton/generator used to create a basic Coraline plugin. The files included may serve as simple samples, but they are really templates used to setup new projects, thanks to the magic of cmake.
 
@@ -33,9 +34,12 @@ The 'superduper' (lowercase of your class name) directory will now hold the skel
 Optional arguments.  In addition to defining PLUGIN_CLASS, as shown above, you may also define:
 
  * _PLUGIN_SHORTNAME_, the name used to reference the module in JS, e.g. "BLE" or 
-   "Notifications", by setting -DPLUGIN_SHORTNAME=Notifications
+   "Notifications", by setting -DPLUGIN_SHORTNAME=Notifications.  Defaults to same name as 
+   the class itself.
  * _PLUGIN_FULLNAME_, the cordova name used in config xml <plugin /> tags, e.g.
    cordova-plugin-dialogs, by setting -DPLUGIN_FULLNAME=cordova-plugin-dialogs
+   Defaults to an all lower-case version of the class name, used as a suffix to
+   "cordova-plugin-" (so cordova-plugin-superduper, here).
 
 
 
