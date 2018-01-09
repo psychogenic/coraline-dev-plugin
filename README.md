@@ -3,6 +3,14 @@ Coraline Plugin Development Skeleton Generator
 
 This is a skeleton/generator used to create a basic Coraline plugin. The files included may serve as simple samples, but they are really templates used to setup new projects, thanks to the magic of cmake.
 
+Using the generator you get:
+
+ * all required boilerplate code generated
+ * a project you can build usind cmake/make
+ * a `make package` command that lets your create DEB/RPM/ZIP files for distribution
+
+
+
 
 Requirements
 ============
@@ -48,11 +56,12 @@ Build your project
 
 
 2) BUILD the generated project (here called 'superduper' as per instructions above):
-
-	cd superduper
+	
+	cd superduper 
 	mkdir build; cd build
 	cmake ..
 	make package
+
 
 You will find a compiled plugin, as well as deb/rpm/zip file (assuming you have debuild/alien/tools to generate packages). Hurray.
 
