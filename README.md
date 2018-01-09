@@ -56,7 +56,7 @@ Build your project
 
 
 2) BUILD the generated project (here called 'superduper' as per instructions above):
-	
+
 	cd superduper 
 	mkdir build; cd build
 	cmake ..
