@@ -57,13 +57,14 @@ Build your project
 
 2) BUILD the generated project (here called 'superduper' as per instructions above):
 
-	cd superduper 
-	mkdir build; cd build
-	cmake ..
+
+	cd superduper ;
+	mkdir build; cd build; 
+	cmake .. ;
 	make package
 
 
-You will find a compiled plugin, as well as deb/rpm/zip file (assuming you have debuild/alien/tools to generate packages). Hurray.
+You will find an .so file of your compiled plugin, as well as deb/rpm/zip file(s) (assuming you have debuild/alien/tools to generate packages). Hurray.
 
 Customize
 =========
